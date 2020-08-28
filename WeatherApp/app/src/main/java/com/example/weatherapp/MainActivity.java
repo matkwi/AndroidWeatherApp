@@ -3,7 +3,9 @@ package com.example.weatherapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -38,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
         description.setText(weatherByCity.getDescription());
         System.out.println(weatherByCity.getDescription());
 
+    }
+
+    public void onSearchClick(View view) {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
     }
 
 
