@@ -4,10 +4,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -15,18 +18,17 @@ import android.widget.SearchView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
 
     ArrayAdapter<String> arrayAdapter;
+
+    private Bundle bundle = new Bundle();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -34,29 +36,30 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        bundle = getIntent().getExtras();
+
         ListView listView = findViewById(R.id.my_list);
         List<String> mylist = new ArrayList<>();
 
         mylist = getListOfCities();
         mylist.sort(Comparator.naturalOrder());
 
-//        String[] locales = Locale.getISOCountries();
-//
-//        for (String countryCode : locales) {
-//
-//            Locale obj = new Locale("", countryCode);
-//
-//            //System.out.println("Country Name = " + obj.getDisplayCountry());
-//            mylist.add(obj.getDisplayCountry());
-//
-//        }
-
-//        mylist.add("Torun");
-//        mylist.add("Warszawa");
-//        mylist.add("Poznan");
-
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mylist);
         listView.setAdapter(arrayAdapter);
+
+        List<String> finalMylist = mylist;
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String city = (String) adapterView.getItemAtPosition(i);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("City", city);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
 
@@ -70,7 +73,7 @@ public class SearchActivity extends AppCompatActivity {
                     JSONArray jsonArray = JsonReader.readJsonFromUrlArray(url);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         String city = jsonArray.getJSONObject(i).getString("capital");
-                        list.add(city);
+                        if(!city.equals("")) list.add(city);
                     }
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -109,5 +112,13 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
     }
 }

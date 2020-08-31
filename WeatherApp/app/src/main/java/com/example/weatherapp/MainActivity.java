@@ -14,12 +14,15 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    private JSONObject weatherJS;
+    public static boolean firstBoot = true;
+    private String capitalCity = "Torun";
     private WeatherByCity weatherByCity = new WeatherByCity();
     private TextView temp;
     private TextView feelsLike;
     private TextView city;
     private TextView description;
+
+    private Bundle bundle = new Bundle();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -27,7 +30,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        weatherByCity.findWeather("Torun");
+        System.out.println(firstBoot);
+
+        if(!firstBoot) {
+            bundle = getIntent().getExtras();
+            if(bundle.getString("City") == null) capitalCity = "Torun";
+            else capitalCity = bundle.getString("City");
+        }
+
+        weatherByCity.findWeather(capitalCity);
 
         temp = findViewById(R.id.temp);
         feelsLike = findViewById(R.id.feelsLike);
@@ -43,8 +54,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSearchClick(View view) {
+        firstBoot = false;
         Intent intent = new Intent(this, SearchActivity.class);
+        bundle.putString("City", capitalCity);
+        intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 
 
