@@ -8,19 +8,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 
 public class MainActivity extends AppCompatActivity {
 
     public static boolean firstBoot = true;
-    private String capitalCity = "Torun";
+    private String capitalCity = "Warsaw";
     private WeatherByCity weatherByCity = new WeatherByCity();
     private TextView temp;
     private TextView feelsLike;
     private TextView city;
     private TextView description;
+    private TextView tempMin;
+    private TextView tempMax;
 
     private Bundle bundle = new Bundle();
 
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!firstBoot) {
             bundle = getIntent().getExtras();
-            if(bundle.getString("City") == null) capitalCity = "Torun";
+            if(bundle.getString("City") == null) capitalCity = "Warsaw";
             else capitalCity = bundle.getString("City");
         }
 
@@ -44,12 +43,16 @@ public class MainActivity extends AppCompatActivity {
         feelsLike = findViewById(R.id.feelsLike);
         city = findViewById(R.id.city);
         description = findViewById(R.id.description);
+        tempMin = findViewById(R.id.tempMin);
+        tempMax = findViewById(R.id.tempMax);
 
         temp.setText(weatherByCity.getTemp() + "°C");
         feelsLike.setText("Perceived temperature: " + weatherByCity.getFeels_like() + "°C");
         city.setText(weatherByCity.getCity());
         description.setText(weatherByCity.getDescription());
-        System.out.println(weatherByCity.getDescription());
+        tempMin.setText("Min temp: " + weatherByCity.getTemp_min() + "°C");
+        tempMax.setText("Max temp: " + weatherByCity.getTemp_max() + "°C");
+
 
     }
 

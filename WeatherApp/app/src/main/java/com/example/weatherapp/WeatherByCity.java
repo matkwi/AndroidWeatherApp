@@ -1,6 +1,5 @@
 package com.example.weatherapp;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
